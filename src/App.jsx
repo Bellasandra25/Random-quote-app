@@ -13,9 +13,13 @@ const fetchQuote = async () => {
     const fetch= await axios.get('https://type.fit/api/quotes'
   )
    console.log("Axios response", fetch)
+   const quotes = res.data; 
+      const randomQuote =
+        quotes[Math.floor(Math.random() * quotes.length)]; 
+
     setTimeout(() => {
-      setQuote(res.data.content);
-      setAuthor(res.data.author); 
+      setQuote(randomQuote.text);
+      setAuthor(randomQuote.author|| "Unknown"); 
       setLoading(false); 
     }, 1000);
    console.log(" fetched the quote")
@@ -52,7 +56,7 @@ useEffect(()=>{
         ) : (
   <textarea name="randomquote"
    className='w-1/2 h-32 p-2 text-black rounded-lg border' 
-   value={loading ? 'loading...' :`${quote}\n- ${author}`} readOnly>
+   value={`${quote}\n- ${author}`} readOnly>
 </textarea>
 )}
    <div className='mt-4 space-x-4'>
@@ -65,7 +69,7 @@ onClick={() => fetchQuote()}
 <button
 className='border-none rounded-lg bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4'
 onClick={() => {
-  const tweetUrl = `https://twitter.com/intent/tweet?text=${quote} - ${author}`;
+  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`${quote} - ${author}`)}`;
   window.open(tweetUrl, '_blank');
 }
 }disabled = {!quote|| !author}
