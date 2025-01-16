@@ -9,38 +9,27 @@ const [loading, setLoading] = useState(false)
 
 const fetchQuote = async () => {
   setLoading(true);
-  try{
-    const fetch= await axios.get('https://type.fit/api/quotes'
-  )
-   console.log("Axios response", fetch)
-   const quotes = res.data; 
-      const randomQuote =
-        quotes[Math.floor(Math.random() * quotes.length)]; 
-
-    setTimeout(() => {
-      setQuote(randomQuote.text);
-      setAuthor(randomQuote.author|| "Unknown"); 
-      setLoading(false); 
-    }, 1000);
-   console.log(" fetched the quote")
-  }catch(error){
-    console.log(error);
-    console.log('Axios error', error);
-    if(error.response){
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
-
-    }else if(error.request){
-      console.log("No response" ,error.request);
-  }
-  else{
-    console.log("Error", error.message);
-  }
-    setQuote('An error occured');
-  setLoading(false);
+  const url = 'https://random-quote-generator2.p.rapidapi.com/randomQuote';
+const options = {
+	method: 'GET',
+	headers: {
+		'x-rapidapi-key': '5f40af5de3msh9c849a448e82a13p1db9adjsnd85c5a9d8295',
+		'x-rapidapi-host': 'random-quote-generator2.p.rapidapi.com'
+	}
 };
 
+try {
+	const response = await fetch(url, options);
+	const result = await response.text();
+  setQuote(JSON.parse(result)[0].Quote);
+  setAuthor(JSON.parse(result)[0].Author);
+	console.log(JSON.parse(result));
+} catch (error) {
+	console.error(error);
+}finally{
+  setLoading(false)
+}
+}
 
 useEffect(()=>{
   fetchQuote()
@@ -67,12 +56,13 @@ onClick={() => fetchQuote()}
   search quote
 </button>
 <button
-className='border-none rounded-lg bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4'
+className='border-none rounded-lg bg-blue-700 hover:bg-blue-500 text-white font-bold py-2 px-4'
 onClick={() => {
   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`${quote} - ${author}`)}`;
   window.open(tweetUrl, '_blank');
 }
-}disabled = {!quote|| !author}
+}
+disabled={!quote || !author}
 >
   tweet quote
 </button>
@@ -80,5 +70,7 @@ onClick={() => {
     </section>
   )
 }
-}
+
+
+
 export default App
