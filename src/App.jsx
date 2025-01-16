@@ -23,7 +23,6 @@ try {
 	const result = await response.text();
   setQuote(JSON.parse(result)[0].Quote);
   setAuthor(JSON.parse(result)[0].Author);
-	console.log(JSON.parse(result));
 } catch (error) {
 	console.error(error);
 }finally{
